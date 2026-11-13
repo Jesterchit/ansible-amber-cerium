@@ -1,0 +1,33 @@
+---
+- name: Configure Amber Cerium Server
+  hosts: web
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      tags: packages
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - make
+          - nodejs
+        state: present
+      tags: packages
+
+    - name: Create users arya, sansa, tirion
+      ansible.builtin.user:
+        name: "{{ item }}"
+        state: present
+        create_home: yes
+        shell: /bin/bash
+      loop:
+        - arya
+        - sansa
+        - tirion
+      tags: users
